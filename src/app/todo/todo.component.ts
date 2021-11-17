@@ -1,14 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { checkToDate } from './fromToDateValidator';
+import { checkFromDate } from './checkFromDateValidator';
 
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss']
+  styleUrls: ['./todo.component.scss'],
+  providers: [DatePipe]
 })
 export class TodoComponent implements OnInit {
   public all: any;
   Items: any;
   finish: number = 0;
+  myDate: any = new Date();
+  from: any;
+  to: any;
+  taskDetail= new FormGroup({});
 
   count() {
     this.finish=0;
@@ -30,20 +39,41 @@ export class TodoComponent implements OnInit {
     this.count();
   }
 
-  constructor() { }
-
-  ngOnInit(): void {
-    this.begin();
+  pattern="^[a-zA-Z]+$";
+  constructor(private datapipe: DatePipe, private fb: FormBuilder) {
+    this.myDate = this.datapipe.transform(this.myDate,'MM') ;
   }
 
-  addTask(e: any) {
+  get f() {
+    return this.taskDetail.controls;
+  }
+
+  ngOnInit() {
+    this.begin();
+    this.taskDetail = this.fb.group({
+      job: ['', [Validators.required, Validators.pattern(this.pattern)]],
+      from: ['', [Validators.required, checkFromDate]],
+      to: ['', Validators.required]
+    },
+    {
+      validator: checkToDate('from', 'to'),
+    });
+  }
+
+  addTask() {
     var newJob = {
-      description: e.controls.job.value, done: false, from_date: e.controls.from.value, to_date: e.controls.to.value
+      description: this.taskDetail.controls.job.value, done: false, from_date: this.taskDetail.controls.from.value, to_date: this.taskDetail.controls.to.value
     }
     this.Items.unshift(newJob);
     // this.Items = [newJob]; đề phòng trường hợp xóa hết dữ liệu ở local
     localStorage.setItem("AllJob", JSON.stringify(this.Items));
     this.count();
+    this.taskDetail.setValue ({
+      job: '',
+      from: '',
+      to: ''
+    });
+    this.taskDetail.reset(this.taskDetail.value);
   }
 
   changeStt(e: any) {
@@ -59,7 +89,6 @@ export class TodoComponent implements OnInit {
           e.splice(number, 1);
         }
       });
-      console.log(this.Items);
       localStorage.setItem("AllJob", JSON.stringify(this.Items));
     }
     this.count();

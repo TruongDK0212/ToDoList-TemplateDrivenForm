@@ -1,52 +1,70 @@
 <h1 class="row justify-content-md-center">To Do List</h1>
-<form class="row justify-content-md-center" #form="ngForm">
+<form class="row justify-content-md-center" [formGroup]="taskDetail">
   <div class="col-md-6 offset-md-3">
-    <div class="form-group row">
-      <label for="job" class="col-md-1 col-form-label">Task</label>
-      <div class="col-md-5">
-        <input type="text" name="job" ngModel class="form-control" required  pattern="^[a-zA-Z]+$"/>
+      <div class="form-group row"> <!-- sum = 12 -->
+        <label for="job" class="col-md-1 col-form-label text-right">Task</label>
+        <div class="col-md-5">
+          <input type="text" name="job" class="form-control" formControlName="job"/>
+        </div>
       </div>
-    </div>
-    <div
-      class="col-md-6 alert alert-danger"
-      role="alert"
-      *ngIf="form.controls.job?.errors?.required && form.controls.job?.touched"
-    >
-      Task Name is required!
-    </div>
-    <div
-      class="col-md-6 alert alert-danger"
-      role="alert"
-      *ngIf="form.controls.job?.errors?.pattern && form.controls.job?.touched"
-    >
-      Task Name is must include character and digit!
-    </div>
-    <div class="form-group row">
-      <label for="from" class="col-md-1 col-form-label">From</label>
-      <div class="col-md-5">
-        <input type="date" name="from" ngModel class="form-control" />
+      <div
+        class="row offset-md-1"
+        role="alert"
+        *ngIf="taskDetail.controls.job?.errors?.required && taskDetail.controls.job?.touched"
+      >
+        <div class="col-md-5 py-2 px-1 ml-1 text-center alert alert-danger">
+          Tên công việc là bắt buộc!
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label for="from" class="col-md-1 col-form-label">To</label>
-      <div class="col-md-5">
-        <input type="date" name="to" ngModel class="form-control" />
+      
+      <div
+        class="row offset-md-1"
+        role="alert"
+        *ngIf="taskDetail.controls.job?.errors?.pattern && (taskDetail.controls.job?.touched || taskDetail.controls.job?.dirty)"
+      >
+        <div class="col-md-5 py-2 px-1 ml-1 text-center alert alert-danger">
+          Tên công việc chỉ được chứa chữ cái và số!
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-1 offset-md-1">
-        <button
-          (click)="addTask(form)"
-          class="btn btn-primary"
-          [disabled]="form.invalid"
-        >
-          Add
-        </button>
+      <div class="form-group row">
+        <label for="from" class="col-md-1 col-form-label text-right">From</label>
+        <div class="col-md-5">
+          <input type="date" name="from" formControlName="from" class="form-control" />
+        </div>
       </div>
-      <div class="col-1">
-        <button (click)="achive(Items)" class="btn btn-primary">Achived</button>
+      <div
+        class="row offset-md-1"
+        role="alert"
+        *ngIf="(taskDetail.controls.from?.touched || taskDetail.controls.from?.dirty) && taskDetail.controls.from?.errors?.outOfMonth"
+      >
+        <div class="col-md-5 py-2 px-1 ml-1 text-center alert alert-danger">
+          Ngày bắt đầu phải trong tháng này!
+        </div>
       </div>
-    </div>
+      <div class="form-group row">
+        <label for="to" class="col-md-1 col-form-label text-right">To</label>
+        <div class="col-md-5">
+          <input type="date" name="to" formControlName="to" class="form-control" />
+        </div>
+      </div>
+      <div class="row offset-md-1" role="alert"
+        *ngIf="(taskDetail.controls.to.touched || taskDetail.controls.to?.dirty) && taskDetail.controls.to.errors?.wrongDate">
+        <div class="col-md-5 py-2 px-1 ml-1 text-center alert alert-danger">
+          Ngày kết thúc phải lớn hơn ngày bắt đầu!
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-6 offset-md-1">
+          <button
+            (click)="addTask()"
+            class="btn btn-primary col-2"
+            [disabled]="taskDetail.invalid"
+          >
+            Add
+          </button>
+          <button (click)="achive(Items)" class="btn btn-danger col-3 mx-2">Achived</button>
+        </div>
+      </div>
   </div>
 </form>
 
@@ -91,3 +109,5 @@
   </tbody>
 </table>
 <div class="text-mute row h4 justify-content-center">You have done {{finish}} of {{Items.length}} task!</div>
+<!-- <p>{{myDate}}</p>
+<p>{{form.controls.from.value|date: 'MM'}}</p> -->
