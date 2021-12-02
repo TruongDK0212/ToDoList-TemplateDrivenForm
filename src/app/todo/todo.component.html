@@ -77,7 +77,7 @@
   </thead>
   <tbody *ngFor="let item of Items">
     <tr *ngIf="item.done === false">
-      <td>{{ item.description }}</td>
+      <td [routerLink]="['task',item.description]">{{ item.description }}</td>
       <td>{{ item.from_date }}</td>
       <td>{{ item.to_date }}</td>
       <td>
@@ -89,7 +89,7 @@
       </td>
     </tr>
     <tr *ngIf="item.done === true">
-      <td>
+      <td [routerLink]="['task',item.description]">
         <del>{{ item.description }}</del>
       </td>
       <td>
@@ -109,5 +109,3 @@
   </tbody>
 </table>
 <div class="text-mute row h4 justify-content-center">You have done {{finish}} of {{Items.length}} task!</div>
-<!-- <p>{{myDate}}</p>
-<p>{{form.controls.from.value|date: 'MM'}}</p> -->

@@ -3,6 +3,9 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkToDate } from './fromToDateValidator';
 import { checkFromDate } from './checkFromDateValidator';
+import { TaskService } from '../task.service';
+import { Observable } from 'rxjs';
+import { Task } from '../model/task';
 
 @Component({
   selector: 'app-todo',
@@ -18,6 +21,8 @@ export class TodoComponent implements OnInit {
   from: any;
   to: any;
   taskDetail= new FormGroup({});
+
+
 
   count() {
     this.finish=0;
@@ -40,9 +45,13 @@ export class TodoComponent implements OnInit {
   }
 
   pattern="^[a-zA-Z]+$";
-  constructor(private datapipe: DatePipe, private fb: FormBuilder) {
+  constructor(
+    private datapipe: DatePipe, private fb: FormBuilder, private api: TaskService) 
+    {
     this.myDate = this.datapipe.transform(this.myDate,'MM') ;
   }
+
+  tasks$: Observable<Task[]> | any;
 
   get f() {
     return this.taskDetail.controls;
@@ -58,6 +67,8 @@ export class TodoComponent implements OnInit {
     {
       validator: checkToDate('from', 'to'),
     });
+    this.tasks$ = this.api.getTasks();
+    this.api.fillTask(this.Items);
   }
 
   addTask() {
@@ -74,11 +85,13 @@ export class TodoComponent implements OnInit {
       to: ''
     });
     this.taskDetail.reset(this.taskDetail.value);
+    this.api.fillTask(this.Items);
   }
 
   changeStt(e: any) {
     localStorage.setItem("AllJob", JSON.stringify(this.Items)); 
     this.count();
+    this.api.fillTask(this.Items);
   }
 
   achive(e:any) {
@@ -92,5 +105,6 @@ export class TodoComponent implements OnInit {
       localStorage.setItem("AllJob", JSON.stringify(this.Items));
     }
     this.count();
+    this.api.fillTask(this.Items);
   }
 }

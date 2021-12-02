@@ -1,0 +1,10 @@
+<h2>Task Detail</h2>
+<div *ngIf="task$ | async as task else loadingTmpl">
+    <p>Task's Name: {{ task.description | json}}</p>
+    <p>Status: {{ task.done | checkOutOfDate}}</p>
+    <p>From: {{ task.fromDate | changeDatePipe}}</p>
+    <p>To: {{ task.toDate | changeDatePipe}}</p>
+</div>
+<ng-template #loadingTmpl>
+    Loading...
+</ng-template>
