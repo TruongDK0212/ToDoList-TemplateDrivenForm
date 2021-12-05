@@ -13,21 +13,22 @@ export class TaskService{
     Tasks = [];
     e.forEach((value: any) => {
         const item = {
+            idTask : value.idTask,
             description: value.description,
             done: value.done,
             fromDate: value.from_date,
             toDate: value.to_date
         }
-        Tasks.push(item);
-    });
+        Tasks.unshift(item);
+      });
   };
   
   getTasks(): Observable<Task[]> {
     return of(Tasks).pipe(delay(500));
   }
 
-  getTaskByDescription(description: string): Observable<Task> {
-    let task = Tasks.find((x) => x.description === description)
+  getTaskByDescription(idTask: string): Observable<Task> {
+    let task = Tasks.find((x) => x.idTask == idTask)
         return of(task as Task).pipe(delay(500));
   }
 }

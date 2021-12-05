@@ -26,7 +26,7 @@ import { checkOutOfDate } from './allPipe/checkOutOfDate.pipe';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

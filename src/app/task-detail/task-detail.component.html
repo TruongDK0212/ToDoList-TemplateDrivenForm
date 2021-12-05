@@ -1,4 +1,5 @@
 <h2>Task Detail</h2>
+<a routerLink="/" class="btn btn-primary">Back</a>
 <div *ngIf="task$ | async as task else loadingTmpl">
     <p>Task's Name: {{ task.description | json}}</p>
     <p>Status: {{ task.done | checkOutOfDate}}</p>

@@ -17,8 +17,15 @@ export class TaskDetailComponent implements OnInit {
   constructor(private _route: ActivatedRoute, private _api: TaskService) {}
 
   ngOnInit(): void {
-    let description = this._route.snapshot.paramMap.get('description');
-    this.task$ = this._api.getTaskByDescription(description as string);
+    let idTask = this._route.snapshot.paramMap.get('idTask');
+    this.task$ = this._api.getTaskByDescription(idTask as string);
+
+
+    // this._route.paramMap.subscribe(params => {
+    //   const idTask = params.get('idTask');
+    //   console.log(idTask);
+    //   this.task$ = this._api.getTaskByDescription(idTask as string);
+    // });
   }
 
 }

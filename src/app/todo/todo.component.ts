@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkToDate } from './fromToDateValidator';
@@ -6,6 +6,7 @@ import { checkFromDate } from './checkFromDateValidator';
 import { TaskService } from '../task.service';
 import { Observable } from 'rxjs';
 import { Task } from '../model/task';
+declare var $: any;
 
 @Component({
   selector: 'app-todo',
@@ -13,7 +14,7 @@ import { Task } from '../model/task';
   styleUrls: ['./todo.component.scss'],
   providers: [DatePipe]
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent implements OnInit  {
   public all: any;
   Items: any;
   finish: number = 0;
@@ -21,8 +22,6 @@ export class TodoComponent implements OnInit {
   from: any;
   to: any;
   taskDetail= new FormGroup({});
-
-
 
   count() {
     this.finish=0;
@@ -67,13 +66,14 @@ export class TodoComponent implements OnInit {
     {
       validator: checkToDate('from', 'to'),
     });
-    this.tasks$ = this.api.getTasks();
     this.api.fillTask(this.Items);
+    this.tasks$ = this.api.getTasks();
+
   }
 
   addTask() {
     var newJob = {
-      description: this.taskDetail.controls.job.value, done: false, from_date: this.taskDetail.controls.from.value, to_date: this.taskDetail.controls.to.value
+      idTask: this.Items.length ,description: this.taskDetail.controls.job.value, done: false, from_date: this.taskDetail.controls.from.value, to_date: this.taskDetail.controls.to.value
     }
     this.Items.unshift(newJob);
     // this.Items = [newJob]; đề phòng trường hợp xóa hết dữ liệu ở local
@@ -96,6 +96,7 @@ export class TodoComponent implements OnInit {
 
   achive(e:any) {
     var i = e.length;
+    var indexTask = 0;
     while (i--) {
       e.forEach((index: any, number: any) => {
         if (index.done == true) {
@@ -104,6 +105,10 @@ export class TodoComponent implements OnInit {
       });
       localStorage.setItem("AllJob", JSON.stringify(this.Items));
     }
+    e.forEach((index: any) => {
+      index.idTask = indexTask;
+      indexTask++;
+    });
     this.count();
     this.api.fillTask(this.Items);
   }
